@@ -1,7 +1,9 @@
-import { TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS } from "hardhat/builtin-tasks/task-names";
-import { subtask } from "hardhat/config";
+import * as dotenv from "dotenv";
+import { Wallet, utils } from "ethers";
+import { task } from "hardhat/config";
 
 import type { HardhatUserConfig } from "hardhat/config";
+import type { HardhatNetworkAccountUserConfig } from "hardhat/types/config";
 
 import "dotenv/config";
 import "@nomiclabs/hardhat-ethers";
@@ -11,14 +13,34 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 
-// Filter Reference Contracts
-subtask(TASK_COMPILE_SOLIDITY_GET_SOURCE_PATHS).setAction(
-  async (_, __, runSuper) => {
-    const paths = await runSuper();
+dotenv.config({ path: "env/.env" });
 
-    return paths.filter((p: any) => !p.includes("contracts/reference/"));
+// This is a sample Hardhat task. To learn how to create your own go to
+// https://hardhat.org/guides/create-task.html
+task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
+  const accounts = await hre.ethers.getSigners();
+
+  for (const account of accounts) {
+    console.log(account.address);
   }
-);
+});
+
+function getAccounts() {
+  const accounts: HardhatNetworkAccountUserConfig[] = [];
+  const defaultBalance = utils.parseEther("2000000").toString();
+
+  const n = 10;
+  for (let i = 0; i < n; ++i) {
+    accounts.push({
+      privateKey: Wallet.createRandom().privateKey,
+      balance: defaultBalance,
+    });
+  }
+  accounts[0].privateKey = process.env.ADMIN_KEY ?? "";
+  accounts[1].privateKey = process.env.USER_KEY ?? "";
+
+  return accounts;
+}
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -72,22 +94,28 @@ const config: HardhatUserConfig = {
   },
   networks: {
     hardhat: {
-      blockGasLimit: 30_000_000,
-      throwOnCallFailures: false,
+      accounts: getAccounts(),
     },
-    verificationNetwork: {
-      url: process.env.NETWORK_RPC ?? "",
+    mainnet: {
+      url: process.env.MAINNET_URL ?? "",
+      chainId: 2151,
+      accounts: [process.env.ADMIN_KEY ?? "", process.env.USER_KEY ?? ""],
+    },
+    testnet: {
+      url: process.env.TESTNET_URL ?? "",
+      chainId: 2019,
+      accounts: [process.env.ADMIN_KEY ?? "", process.env.USER_KEY ?? ""],
+    },
+    localnet: {
+      url: process.env.LOCALNET_URL ?? "",
+      chainId: 34559,
+      accounts: [process.env.ADMIN_KEY ?? "", process.env.USER_KEY ?? ""],
     },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
   },
-  etherscan: {
-    apiKey: process.env.EXPLORER_API_KEY,
-  },
-  // specify separate cache for hardhat, since it could possibly conflict with foundry's
-  paths: { cache: "hh-cache" },
 };
 
 export default config;

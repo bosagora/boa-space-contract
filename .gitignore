@@ -23,4 +23,5 @@ reference-working
 
 # VScode
 .vscode
-__pycache__
+__pycache_
+.idea/
