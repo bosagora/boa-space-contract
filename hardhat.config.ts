@@ -38,6 +38,9 @@ function getAccounts() {
   }
   accounts[0].privateKey = process.env.ADMIN_KEY ?? "";
   accounts[1].privateKey = process.env.USER_KEY ?? "";
+  accounts[2].privateKey = process.env.OWNER_KEY ?? "";
+  accounts[3].privateKey = process.env.ZONE_KEY ?? "";
+  accounts[4].privateKey = process.env.BUYER_KEY ?? "";
 
   return accounts;
 }
@@ -99,17 +102,35 @@ const config: HardhatUserConfig = {
     mainnet: {
       url: process.env.MAINNET_URL ?? "",
       chainId: 2151,
-      accounts: [process.env.ADMIN_KEY ?? "", process.env.USER_KEY ?? ""],
+      accounts: [
+        process.env.ADMIN_KEY ?? "",
+        process.env.USER_KEY ?? "",
+        process.env.OWNER_KEY ?? "",
+        process.env.ZONE_KEY ?? "",
+        process.env.BUYER_KEY ?? "",
+      ],
     },
     testnet: {
       url: process.env.TESTNET_URL ?? "",
       chainId: 2019,
-      accounts: [process.env.ADMIN_KEY ?? "", process.env.USER_KEY ?? ""],
+      accounts: [
+        process.env.ADMIN_KEY ?? "",
+        process.env.USER_KEY ?? "",
+        process.env.OWNER_KEY ?? "",
+        process.env.ZONE_KEY ?? "",
+        process.env.BUYER_KEY ?? "",
+      ],
     },
     localnet: {
       url: process.env.LOCALNET_URL ?? "",
       chainId: 34559,
-      accounts: [process.env.ADMIN_KEY ?? "", process.env.USER_KEY ?? ""],
+      accounts: [
+        process.env.ADMIN_KEY ?? "",
+        process.env.USER_KEY ?? "",
+        process.env.OWNER_KEY ?? "",
+        process.env.ZONE_KEY ?? "",
+        process.env.BUYER_KEY ?? "",
+      ],
     },
   },
   gasReporter: {
