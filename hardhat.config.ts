@@ -121,6 +121,17 @@ const config: HardhatUserConfig = {
         process.env.BUYER_KEY ?? "",
       ],
     },
+    goerli: {
+      url: process.env.GOERLI_URL ?? "",
+      chainId: 5,
+      accounts: [
+        process.env.ADMIN_KEY ?? "",
+        process.env.USER_KEY ?? "",
+        process.env.OWNER_KEY ?? "",
+        process.env.ZONE_KEY ?? "",
+        process.env.BUYER_KEY ?? "",
+      ],
+    },
     localnet: {
       url: process.env.LOCALNET_URL ?? "",
       chainId: 34559,
